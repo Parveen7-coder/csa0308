@@ -1,0 +1,156 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define a node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* head = NULL; // Head pointer
+
+// Function to create a new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert at beginning
+void insertAtBeginning(int value) {
+    struct Node* newNode = createNode(value);
+    newNode->next = head;
+    head = newNode;
+}
+
+// Insert at end
+void insertAtEnd(int value) {
+    struct Node* newNode = createNode(value);
+    if (head == NULL) {
+        head = newNode;
+        return;
+    }
+    struct Node* temp = head;
+    while (temp->next != NULL)
+        temp = temp->next;
+    temp->next = newNode;
+}
+
+// Insert after a given node
+void insertAfter(int key, int value) {
+    struct Node* temp = head;
+    while (temp != NULL && temp->data != key)
+        temp = temp->next;
+    if (temp == NULL) {
+        printf("Node with value %d not found.\n", key);
+        return;
+    }
+    struct Node* newNode = createNode(value);
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+// Delete a node
+void deleteNode(int value) {
+    struct Node* temp = head;
+    struct Node* prev = NULL;
+
+    if (temp != NULL && temp->data == value) {
+        head = temp->next;
+        free(temp);
+        return;
+    }
+    while (temp != NULL && temp->data != value) {
+        prev = temp;
+        temp = temp->next;
+    }
+    if (temp == NULL) {
+        printf("Node with value %d not found.\n", value);
+        return;
+    }
+    prev->next = temp->next;
+    free(temp);
+}
+
+// Search a node
+void searchNode(int value) {
+    struct Node* temp = head;
+    int pos = 1;
+    while (temp != NULL) {
+        if (temp->data == value) {
+            printf("Node with value %d found at position %d\n", value, pos);
+            return;
+        }
+        temp = temp->next;
+        pos++;
+    }
+    printf("Node with value %d not found.\n", value);
+}
+
+// Display the linked list
+void displayList() {
+    struct Node* temp = head;
+    if (temp == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    printf("Linked List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Main menu
+int main() {
+    int choice, value, key;
+
+    while (1) {
+        printf("\n--- Linked List Operations ---\n");
+        printf("1. Insert at Beginning\n2. Insert at End\n3. Insert After\n");
+        printf("4. Delete Node\n5. Search Node\n6. Display List\n7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            printf("Enter value: ");
+            scanf("%d", &value);
+            insertAtBeginning(value);
+            break;
+        case 2:
+            printf("Enter value: ");
+            scanf("%d", &value);
+            insertAtEnd(value);
+            break;
+        case 3:
+            printf("Enter key (after which to insert): ");
+            scanf("%d", &key);
+            printf("Enter value: ");
+            scanf("%d", &value);
+            insertAfter(key, value);
+            break;
+        case 4:
+            printf("Enter value to delete: ");
+            scanf("%d", &value);
+            deleteNode(value);
+            break;
+        case 5:
+            printf("Enter value to search: ");
+            scanf("%d", &value);
+            searchNode(value);
+            break;
+        case 6:
+            displayList();
+            break;
+        case 7:
+            printf("Exiting...\n");
+            exit(0);
+        default:
+            printf("Invalid choice! Try again.\n");
+        }
+    }
+    return 0;
+}
